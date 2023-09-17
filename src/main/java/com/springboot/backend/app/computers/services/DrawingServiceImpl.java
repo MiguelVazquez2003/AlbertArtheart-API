@@ -2,7 +2,6 @@ package com.springboot.backend.app.computers.services;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,42 +11,39 @@ import com.springboot.backend.app.computers.dao.IDrawingDao;
 import com.springboot.backend.app.computers.entity.Drawing;
 
 @Service
-public class DrawingServiceImpl implements IDrawingService{
+public class DrawingServiceImpl implements IDrawingService {
 	private List<Drawing> lista;
-	
 	@Autowired
 	private IDrawingDao drawingDao;
 
 	public DrawingServiceImpl() {
-		
 	}
-	
+
 	@Override
 	public Drawing getByDate(Date date) {
-		this.lista = lista;
 		Drawing drawingResult = null;
-		
-		for(Drawing drawing : this.lista) {
-			if(date == drawing.getDiaCreacion()) {
+
+		for (Drawing drawing : this.lista) {
+			if (date == drawing.getDiaCreacion()) {
 				drawingResult = drawing;
 				break;
 			}
 		}
-		return drawingResult; 
+		return drawingResult;
 	}
-	
+
 	@Transactional(readOnly = true)
 	@Override
 	public List<Drawing> findAll() {
 		return (List<Drawing>) drawingDao.findAll();
 	}
-	
+
 	@Transactional(readOnly = true)
 	@Override
 	public Drawing findById(Long id) {
-	    
-	        return drawingDao.findById(id).orElse(null);
-	 
+
+		return drawingDao.findById(id).orElse(null);
+
 	}
 
 }

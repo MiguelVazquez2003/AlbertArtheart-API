@@ -1,23 +1,16 @@
 package com.springboot.backend.app.computers.controllers;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,16 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.springboot.backend.app.computers.dao.DrawingDaoImpl;
 import com.springboot.backend.app.computers.dao.IDrawingDao;
 import com.springboot.backend.app.computers.entity.Drawing;
-import com.springboot.backend.app.computers.services.DrawingServiceImpl;
 import com.springboot.backend.app.computers.services.IDrawingService;
-import org.springframework.validation.BindingResult;
 
 @RestController
 @RequestMapping("/drawings")
@@ -49,7 +36,7 @@ public class DrawingController {
         this.drawingDao = drawingDao;
 		this.drawingService = drawingService;
     }
-    
+
     @CrossOrigin
     @RequestMapping(method = RequestMethod.GET, path = "/all")
     public ResponseEntity<List<Drawing>> getAllDrawings() {

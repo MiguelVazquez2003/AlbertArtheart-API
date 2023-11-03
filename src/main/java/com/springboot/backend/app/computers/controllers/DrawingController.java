@@ -25,7 +25,6 @@ import com.springboot.backend.app.computers.entity.Drawing;
 import com.springboot.backend.app.computers.services.IDrawingService;
 
 @RestController
-@RequestMapping("/drawings")
 public class DrawingController {
 
     private final IDrawingDao drawingDao;
@@ -67,6 +66,7 @@ public class DrawingController {
             existingDrawing.setTitulo(updatedDrawing.getTitulo());
             existingDrawing.setDescripcion(updatedDrawing.getDescripcion());
             existingDrawing.setImagen(updatedDrawing.getImagen());
+            existingDrawing.setCategoria(updatedDrawing.getCategoria());
 
             drawingDao.save(existingDrawing);
 

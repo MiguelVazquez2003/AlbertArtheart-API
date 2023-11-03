@@ -13,5 +13,7 @@ public interface IDrawingService {
 
 
 	public Drawing getByDate(Date date);
+	
+	public List<Drawing> getAllByDate(String day);
 
 }

@@ -1,8 +1,13 @@
 package com.springboot.backend.app.computers.controllers;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.JOptionPane;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -89,7 +94,7 @@ public class DrawingController {
     }
 
     @GetMapping("/byDate")
-    public ResponseEntity<Drawing> getDrawingByDate(@RequestParam(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+    public ResponseEntity<Drawing> getDrawingByDate(@RequestParam(name = "date") @DateTimeFormat Date date) {
         Drawing drawing = drawingService.getByDate(date);
         if (drawing != null) {
             return ResponseEntity.ok(drawing);
@@ -97,4 +102,25 @@ public class DrawingController {
             return ResponseEntity.notFound().build();
         }
     }
+    
+    @GetMapping("/dia")
+    public ResponseEntity<List<Drawing>> getDrawingsByCurrentDate() {
+        // Obtén el día actual en formato UTC
+        LocalDate currentDateUtc = LocalDate.now(ZoneId.of("UTC"));
+
+        // Convierte el día actual en un valor numérico (yyyyMMdd) en formato UTC
+        String currentDateValueUtc = currentDateUtc.format(DateTimeFormatter.ISO_DATE);
+
+        // Pasa el día actual en formato UTC como parámetro para obtener los dibujos
+        List<Drawing> drawings = drawingService.getAllByDate(currentDateValueUtc);
+
+        if (!drawings.isEmpty()) {
+            return ResponseEntity.ok(drawings);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+
+
 }

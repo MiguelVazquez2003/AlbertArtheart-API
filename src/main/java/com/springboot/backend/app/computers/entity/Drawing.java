@@ -1,6 +1,8 @@
 package com.springboot.backend.app.computers.entity;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -38,14 +40,14 @@ public class Drawing implements Serializable{
 	@Column(name = "imagen")
 	private String imagen;
 	
-	@Column(name = "dia_creacion", updatable = false)
+	@Column(name = "dia_creacion")
 	@Temporal(TemporalType.TIMESTAMP)
 	@CreationTimestamp
 	private Date diaCreacion;
 	
 	@Column(name = "categoria")
     private String categoria;
-
+	
 
 	public String getCategoria() {
 		return categoria;

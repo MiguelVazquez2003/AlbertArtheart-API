@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -48,6 +49,17 @@ public class Drawing implements Serializable{
 	@Column(name = "categoria")
     private String categoria;
 	
+	@Transient
+	private Integer port;
+	
+
+	public Integer getPort() {
+		return port;
+	}
+
+	public void setPort(Integer port) {
+		this.port = port;
+	}
 
 	public String getCategoria() {
 		return categoria;

@@ -6,10 +6,12 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,95 +34,98 @@ import com.springboot.backend.app.computers.services.IDrawingService;
 @RestController
 public class DrawingController {
 
-    private final IDrawingDao drawingDao;
-    private final IDrawingService drawingService;
+	private final IDrawingDao drawingDao;
+	private final IDrawingService drawingService;
 
-    @Autowired
-    public DrawingController(IDrawingDao drawingDao,IDrawingService drawingService) {
-        this.drawingDao = drawingDao;
+	@Value("${server.port}")
+	private Integer port;
+
+	@Autowired
+	public DrawingController(IDrawingDao drawingDao, IDrawingService drawingService) {
+		this.drawingDao = drawingDao;
 		this.drawingService = drawingService;
-    }
+	}
 
-    @CrossOrigin
-    @RequestMapping(method = RequestMethod.GET, path = "/all")
-    public ResponseEntity<List<Drawing>> getAllDrawings() {
-        List<Drawing> drawings = drawingService.findAll();
-        return ResponseEntity.ok(drawings);
-    }
+	@CrossOrigin
+	@RequestMapping(method = RequestMethod.GET, path = "/all")
+	public List<Drawing> getAllDrawings() {
+		return drawingService.findAll().stream().map(drawing -> {
+			drawing.setPort(port);
+			return drawing;
+		}).collect(Collectors.toList());
+	}
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Drawing> getDrawingById(@PathVariable Long id) {
-        Drawing drawing = drawingService.findById(id);
-        if (drawing != null) {
-            return ResponseEntity.ok(drawing);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<Drawing> getDrawingById(@PathVariable Long id) {
+		Drawing drawing = drawingService.findById(id);
+		if (drawing != null) {
+			return ResponseEntity.ok(drawing);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
 
-    @PostMapping("")
-    public ResponseEntity<Drawing> createDrawing(@RequestBody Drawing drawing) {
-        drawingDao.save(drawing);
-        return ResponseEntity.status(HttpStatus.CREATED).body(drawing);
-    }
-    @PutMapping("/{id}")
-    public ResponseEntity<Drawing> modifyDrawing(@PathVariable Long id, @RequestBody Drawing updatedDrawing) {
-        Drawing existingDrawing = drawingService.findById(id);
+	@PostMapping("")
+	public ResponseEntity<Drawing> createDrawing(@RequestBody Drawing drawing) {
+		drawingDao.save(drawing);
+		return ResponseEntity.status(HttpStatus.CREATED).body(drawing);
+	}
 
-        if (existingDrawing != null) {
-            existingDrawing.setTitulo(updatedDrawing.getTitulo());
-            existingDrawing.setDescripcion(updatedDrawing.getDescripcion());
-            existingDrawing.setImagen(updatedDrawing.getImagen());
-            existingDrawing.setCategoria(updatedDrawing.getCategoria());
+	@PutMapping("/{id}")
+	public ResponseEntity<Drawing> modifyDrawing(@PathVariable Long id, @RequestBody Drawing updatedDrawing) {
+		Drawing existingDrawing = drawingService.findById(id);
 
-            drawingDao.save(existingDrawing);
+		if (existingDrawing != null) {
+			existingDrawing.setTitulo(updatedDrawing.getTitulo());
+			existingDrawing.setDescripcion(updatedDrawing.getDescripcion());
+			existingDrawing.setImagen(updatedDrawing.getImagen());
+			existingDrawing.setCategoria(updatedDrawing.getCategoria());
 
-            return ResponseEntity.ok(existingDrawing);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+			drawingDao.save(existingDrawing);
 
+			return ResponseEntity.ok(existingDrawing);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDrawing(@PathVariable Long id) {
-        Drawing drawing = drawingService.findById(id);
-        if (drawing != null) {
-            drawingDao.delete(drawing);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteDrawing(@PathVariable Long id) {
+		Drawing drawing = drawingService.findById(id);
+		if (drawing != null) {
+			drawingDao.delete(drawing);
+			return ResponseEntity.noContent().build();
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
 
-    @GetMapping("/byDate")
-    public ResponseEntity<Drawing> getDrawingByDate(@RequestParam(name = "date") @DateTimeFormat Date date) {
-        Drawing drawing = drawingService.getByDate(date);
-        if (drawing != null) {
-            return ResponseEntity.ok(drawing);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-    
-    @GetMapping("/dia")
-    public ResponseEntity<List<Drawing>> getDrawingsByCurrentDate() {
-        // Obtén el día actual en formato UTC
-        LocalDate currentDateUtc = LocalDate.now(ZoneId.of("UTC"));
+	@GetMapping("/byDate")
+	public ResponseEntity<Drawing> getDrawingByDate(@RequestParam(name = "date") @DateTimeFormat Date date) {
+		Drawing drawing = drawingService.getByDate(date);
+		if (drawing != null) {
+			return ResponseEntity.ok(drawing);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
 
-        // Convierte el día actual en un valor numérico (yyyyMMdd) en formato UTC
-        String currentDateValueUtc = currentDateUtc.format(DateTimeFormatter.ISO_DATE);
+	@GetMapping("/dia")
+	public ResponseEntity<List<Drawing>> getDrawingsByCurrentDate() {
+		// Obtén el día actual en formato UTC
+		LocalDate currentDateUtc = LocalDate.now(ZoneId.of("UTC"));
 
-        // Pasa el día actual en formato UTC como parámetro para obtener los dibujos
-        List<Drawing> drawings = drawingService.getAllByDate(currentDateValueUtc);
+		// Convierte el día actual en un valor numérico (yyyyMMdd) en formato UTC
+		String currentDateValueUtc = currentDateUtc.format(DateTimeFormatter.ISO_DATE);
 
-        if (!drawings.isEmpty()) {
-            return ResponseEntity.ok(drawings);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+		// Pasa el día actual en formato UTC como parámetro para obtener los dibujos
+		List<Drawing> drawings = drawingService.getAllByDate(currentDateValueUtc);
 
-
+		if (!drawings.isEmpty()) {
+			return ResponseEntity.ok(drawings);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
 
 }

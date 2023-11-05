@@ -8,6 +8,10 @@ public class Notificacion {
 
     public Notificacion() {
     }
+    
+    public Notificacion(String mensaje) {
+        this.mensaje = mensaje;
+    }
 
 	public Notificacion(Drawing drawing, String destinatario, String asunto, String mensaje) {
 		this.drawing = drawing;

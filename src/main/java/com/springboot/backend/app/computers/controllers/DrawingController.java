@@ -112,6 +112,8 @@ public class DrawingController {
 
 	@GetMapping("/dia")
 	public ResponseEntity<List<Drawing>> getDrawingsByCurrentDate() {
+		
+		
 		// Obtén el día actual en formato UTC
 		LocalDate currentDateUtc = LocalDate.now(ZoneId.of("UTC"));
 
@@ -119,12 +121,12 @@ public class DrawingController {
 		String currentDateValueUtc = currentDateUtc.format(DateTimeFormatter.ISO_DATE);
 
 		// Pasa el día actual en formato UTC como parámetro para obtener los dibujos
-		List<Drawing> drawings = drawingService.getAllByDate(currentDateValueUtc);
-
+		//List<Drawing> drawings = drawingService.getAllByDate(currentDateValueUtc);
+		List<Drawing> drawings = null;
 		if (!drawings.isEmpty()) {
 			return ResponseEntity.ok(drawings);
 		} else {
-			return ResponseEntity.notFound().build();
+			throw new RuntimeException("No se encontraron dibujos el dia de hoy");
 		}
 	}
 

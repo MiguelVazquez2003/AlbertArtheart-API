@@ -58,11 +58,14 @@ public class DrawingController {
 	@GetMapping("/{id}")
 	public ResponseEntity<Drawing> getDrawingById(@PathVariable Long id) {
 		Drawing drawing = drawingService.findById(id);
-		if (drawing != null) {
+		try {
+			Thread.sleep(2000L);
+			
+		}catch(InterruptedException e) {
+			e.printStackTrace();
+			}
 			return ResponseEntity.ok(drawing);
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+		
 	}
 
 	@PostMapping("")
@@ -121,13 +124,17 @@ public class DrawingController {
 		String currentDateValueUtc = currentDateUtc.format(DateTimeFormatter.ISO_DATE);
 
 		// Pasa el día actual en formato UTC como parámetro para obtener los dibujos
-		//List<Drawing> drawings = drawingService.getAllByDate(currentDateValueUtc);
-		List<Drawing> drawings = null;
+		List<Drawing> drawings = drawingService.getAllByDate(currentDateValueUtc);
+		
+		
+		
 		if (!drawings.isEmpty()) {
 			return ResponseEntity.ok(drawings);
 		} else {
 			throw new RuntimeException("No se encontraron dibujos el dia de hoy");
 		}
+		
+
 	}
 
 }

@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,11 +34,15 @@ import com.springboot.backend.app.computers.entity.Drawing;
 import com.springboot.backend.app.computers.services.IDrawingService;
 
 @RestController
+
 public class DrawingController {
 
 	private final IDrawingDao drawingDao;
 	private final IDrawingService drawingService;
 
+	@Autowired
+	private Environment env;
+	
 	@Value("${server.port}")
 	private Integer port;
 
@@ -50,7 +56,7 @@ public class DrawingController {
 	@RequestMapping(method = RequestMethod.GET, path = "/all")
 	public List<Drawing> getAllDrawings() {
 		return drawingService.findAll().stream().map(drawing -> {
-			drawing.setPort(port);
+			drawing.setPort(Integer.parseInt(env.getProperty("local.server.port")));
 			return drawing;
 		}).collect(Collectors.toList());
 	}
@@ -58,12 +64,11 @@ public class DrawingController {
 	@GetMapping("/{id}")
 	public ResponseEntity<Drawing> getDrawingById(@PathVariable Long id) {
 		Drawing drawing = drawingService.findById(id);
-		try {
-			Thread.sleep(2000L);
-			
-		}catch(InterruptedException e) {
-			e.printStackTrace();
-			}
+//		try {
+//			Thread.sleep(2000L);
+//			
+//		}catch(InterruptedException e) {
+//			e.printStackTrace();
 			return ResponseEntity.ok(drawing);
 		
 	}

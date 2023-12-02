@@ -13,10 +13,10 @@ public interface UsuarioRepository extends PagingAndSortingRepository<Usuario, L
 
     public Usuario findByUsernameAndEmail(String username, String email);
 
-    @Query(value="select * from usuarios where username = ?1")
+    @Query(value="select u from Usuario u where u.username = ?1")
     public Usuario obtenerPorUsername(String username);
 
-    @Query(value="select * from usuarios where username = ?1 and email = ?2")
+    @Query(value="select u from Usuario u where u.username = ?1 and u.email = ?2")
     public Usuario obtenerPorUsernameYEmail(String username, String email);
 
 

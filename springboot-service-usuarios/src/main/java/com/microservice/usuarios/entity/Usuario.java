@@ -45,8 +45,7 @@ public class Usuario implements Serializable{
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "usuarios_to_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "rooles_id"),
-    uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "rooles_id"})}
-    )
+    uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "rooles_id"})})
     private List<Rol> roles;
 
 	public Long getId() {
@@ -104,6 +103,15 @@ public class Usuario implements Serializable{
 	public void setApellido(String apellido) {
 		this.apellido = apellido;
 	}
+
+	public List<Rol> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Rol> roles) {
+		this.roles = roles;
+	}
+	
     
 
 
